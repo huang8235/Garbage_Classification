@@ -1,3 +1,5 @@
+#发现tensorflow自带的ImageDataGenerator可以在读取图片的同时resize,故此脚本废弃不用
+
 import cv2
 import numpy as np
 import os
