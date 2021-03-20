@@ -24,7 +24,7 @@ train_datagen = ImageDataGenerator(
        validation_split=0.1)    #用作验证集的比例
 
 val_datagen = ImageDataGenerator(
-       rescale=1. / 255,
+       rescale=1./255,
        validation_split=0.1)
 
 train_generator = train_datagen.flow_from_directory(
@@ -64,7 +64,7 @@ model.summary()
 
 model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),loss='categorical_crossentropy',metrics=['acc'])
 print("model training...")
-history=model.fit(train_generator,epochs=train_epochs) 
+history=model.fit(train_generator,epochs=train_epochs,validation_data=val_generator) 
 
 #model saved
 model_path=r'D:\python_work\Garbage_Classification\neural_network\model_saved\%s'
@@ -81,12 +81,12 @@ print('model saved.')
 print(history.history.keys())
 plt.plot(history.epoch,history.history.get('loss'),label='loss')
 plt.plot(history.epoch,history.history.get('val_loss'),label='val_loss')
-plt.title('loss值变化')
+plt.title('loss')
 plt.legend()
 plt.show() 
 
 plt.plot(history.epoch,history.history.get('acc'),label='acc')
 plt.plot(history.epoch,history.history.get('val_acc'),label='val_acc')
-plt.title('准确率值变化')
+plt.title('accuracy')
 plt.legend()
 plt.show()
