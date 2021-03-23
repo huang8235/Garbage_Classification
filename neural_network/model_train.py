@@ -12,20 +12,22 @@ from tensorflow.keras.layers import Conv2D,Flatten,MaxPooling2D,Dense
 train_file_path=r'D:\python_work\Garbage_Classification\neural_network\dataset\image_train'
 validation_file_path=r'D:\python_work\Garbage_Classification\neural_network\dataset\image_val'
 img_width,img_height = 256,256
-batch_size = 15
-cell=128
-label_num=5
+batch_size = 16
+label_num=8
 train_epochs=10
 
 train_datagen = ImageDataGenerator(
        rescale=1./255,          #归一化
+       rotation_range=40,       #旋转
+       width_shift_range=0.2,
+       height_shift_range=0.2,
+       zoom_range=0.2,
        shear_range=0.2,         #错切变换角度
        horizontal_flip=True,    #水平翻转
-       validation_split=0.1)    #用作验证集的比例
-
+       )
 val_datagen = ImageDataGenerator(
        rescale=1./255,
-       validation_split=0.1)
+       )
 
 train_generator = train_datagen.flow_from_directory(
        train_file_path,
@@ -33,7 +35,7 @@ train_generator = train_datagen.flow_from_directory(
        batch_size=batch_size,
        shuffle=True,
        class_mode="categorical", #对类型进行热编码："categorical",返回one-hot 编码标签
-       save_format="jpeg"
+       save_format="jpg"
        )
 
 val_generator=val_datagen.flow_from_directory(
@@ -41,7 +43,7 @@ val_generator=val_datagen.flow_from_directory(
        target_size=(img_width,img_height), 
        batch_size=batch_size,
        class_mode='categorical',
-       save_format="jpeg"
+       save_format="jpg"
 )
 
 model=tf.keras.Sequential()
@@ -51,14 +53,16 @@ model.add(MaxPooling2D(pool_size=2))
 model.add(Conv2D(filters=64,kernel_size=3,padding='same',activation='relu'))
 model.add(MaxPooling2D(pool_size=2))
 
-model.add(Conv2D(filters=32,kernel_size=3,padding='same',activation='relu'))
-model.add(MaxPooling2D(pool_size=2))
+# model.add(Conv2D(filters=32,kernel_size=3,padding='same',activation='relu'))
+# model.add(MaxPooling2D(pool_size=2))
 
-model.add(Conv2D(filters=32,kernel_size=3,padding='same',activation='relu'))
-model.add(MaxPooling2D(pool_size=2))
+# model.add(Conv2D(filters=32,kernel_size=3,padding='same',activation='relu'))
+# model.add(MaxPooling2D(pool_size=2))
 
 model.add(Flatten())
-model.add(Dense(cell,activation='relu'))
+model.add(Dense(400,activation='relu'))
+model.add(Dense(120,activation='relu'))
+model.add(Dense(84,activation='relu'))
 model.add(Dense(label_num,activation='softmax'))
 model.summary()
 
