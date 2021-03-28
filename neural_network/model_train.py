@@ -14,7 +14,7 @@ validation_file_path=r'D:\python_work\Garbage_Classification\neural_network\data
 img_width,img_height = 256,256
 batch_size = 16
 label_num=8
-train_epochs=10
+train_epochs=25
 
 train_datagen = ImageDataGenerator(
        rescale=1./255,          #归一化
@@ -60,13 +60,15 @@ model.add(MaxPooling2D(pool_size=2))
 # model.add(MaxPooling2D(pool_size=2))
 
 model.add(Flatten())
-model.add(Dense(400,activation='relu'))
-model.add(Dense(120,activation='relu'))
+#model.add(Dense(400,activation='relu'))
+model.add(Dense(128,activation='relu'))
+model.add(tf.keras.layers.Dropout(0.2)) #添加dropout层，抑制过拟合
 model.add(Dense(84,activation='relu'))
+model.add(tf.keras.layers.Dropout(0.2)) #添加dropout层，抑制过拟合
 model.add(Dense(label_num,activation='softmax'))
 model.summary()
 
-model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),loss='categorical_crossentropy',metrics=['acc'])
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.01),loss='categorical_crossentropy',metrics=['acc'])
 print("model training...")
 history=model.fit(train_generator,epochs=train_epochs,validation_data=val_generator) 
 
@@ -87,10 +89,12 @@ plt.plot(history.epoch,history.history.get('loss'),label='loss')
 plt.plot(history.epoch,history.history.get('val_loss'),label='val_loss')
 plt.title('loss')
 plt.legend()
+plt.grid()
 plt.show() 
 
 plt.plot(history.epoch,history.history.get('acc'),label='acc')
 plt.plot(history.epoch,history.history.get('val_acc'),label='val_acc')
 plt.title('accuracy')
 plt.legend()
+plt.grid()
 plt.show()
